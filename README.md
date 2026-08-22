@@ -28,6 +28,17 @@ By default, Windows Explorer auto-detects folder types (**Pictures, Music, Video
 > **Example:** Before: ~10 seconds → After: ~1 second.
 > Actual results vary depending on your PC, storage type, and number of files.
 
+**BEFORE**
+
+
+https://github.com/user-attachments/assets/ad438f3d-c10e-431e-9464-b6ac850df2f2
+
+
+**INSTALL & AFTER**
+
+
+https://github.com/user-attachments/assets/fdbeec77-d9af-4369-bca8-57caa9562662
+
 ---
 
 ## 📥 Installation
@@ -38,6 +49,7 @@ By default, Windows Explorer auto-detects folder types (**Pictures, Music, Video
 4. Done — Explorer will restart automatically.
 
 ### Or run directly in a PowerShell terminal
+WARNING!!! YOUR DESKTOP WILL FLICKERING ONCE!
 
 ```powershell
 # === FORCE ALL EXPLORER FOLDERS TO GENERIC VIEW ===
@@ -73,6 +85,7 @@ Write-Host "`n✓ Explorer is now using the generic folder template.`n" -Foregro
 Want to revert to normal Windows behavior? Run `Restore-ExplorerDefault.ps1`.
 
 ### Or run directly in a PowerShell terminal
+WARNING!!! YOUR DESKTOP WILL FLICKERING ONCE!
 
 ```powershell
 # === RESTORE WINDOWS EXPLORER DEFAULT BEHAVIOR ===
