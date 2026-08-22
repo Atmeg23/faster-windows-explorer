@@ -1,33 +1,46 @@
 # 🚀 Faster Windows Explorer
 
-Make Windows Explorer simpler and potentially faster by using one consistent folder view.
+Make Windows Explorer Sorting Features More Faster 10x !
 
-Windows Explorer automatically detects **Pictures, Music, Videos**, etc. and may load additional metadata.
+By default, Windows Explorer auto-detects folder types (**Pictures, Music, Videos**, etc.) and loads extra metadata columns for each — which can slow down browsing, especially in folders with many files. This script forces **all folders** to use the generic template, so Explorer skips that extra metadata lookup.
+
+---
+
+## 📋 Table of Contents
+
+- [Before vs After](#-before-vs-after)
+- [Installation](#-installation)
+- [Restore Default](#-restore-default)
+- [How It Works](#-how-it-works)
+- [Notes & Warnings](#-notes--warnings)
+- [Requirements](#-requirements)
+- [Credit](#-credit)
+
+---
 
 ## ⚡ Before vs After
 
-|             | Before                                                           | After                                                              |
-| ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **Columns** | Varies by folder (`Tags`, `Dimensions`, `Length`, `Album`, etc.) | All generic: `Name \| Date modified \| Type \| Size`               |
-| **Sorting** | Potentially slower — Explorer may load additional metadata       | Potentially faster! — Explorer doesn't need to load those metadata |
+|             | Before                                                                | After                                                             |
+| ----------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Columns** | Varies by folder type (`Tags`, `Dimensions`, `Length`, `Album`, etc.)   | Generic for all folders: `Name`, `Date modified`, `Type`, `Size`     |
+| **Sorting** | Slower — Explorer may load extra metadata per folder type              | Faster — Explorer skips loading that metadata                        |
 
 > **Example:** Before: ~10 seconds → After: ~1 second.
-> Actual results depend on your PC, storage, and number of files.
+> Actual results vary depending on your PC, storage type, and number of files.
 
 ---
 
 ## 📥 Installation
 
-1. Right-click `install faster-windows-explorer.ps1`
-2. Select **Run with PowerShell**
-3. Done. 
+1. Download or clone this repository.
+2. Right-click `install faster-windows-explorer.ps1`.
+3. Select **Run with PowerShell**.
+4. Done — Explorer will restart automatically.
 
-Explorer will restart automatically.
-
-### Or run directly with PowerShell
+### Or run directly in a PowerShell terminal
 
 ```powershell
-# === FORCE ALL EXPLORER FOLDERS TO GENERIC ===
+# === FORCE ALL EXPLORER FOLDERS TO GENERIC VIEW ===
 
 $Shell = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell"
 
@@ -35,7 +48,7 @@ $Shell = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell
 Remove-Item "$Shell\Bags" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item "$Shell\BagMRU" -Recurse -Force -ErrorAction SilentlyContinue
 
-# Create Generic folder template
+# Create the generic folder template
 $AllFolders = "$Shell\Bags\AllFolders\Shell"
 New-Item $AllFolders -Force | Out-Null
 
@@ -50,27 +63,23 @@ New-ItemProperty `
 Stop-Process -Name explorer -Force
 Start-Process explorer.exe
 
-Write-Host ""
-Write-Host "✓ Explorer is now using the Generic folder template." -ForegroundColor Green
-Write-Host ""
+Write-Host "`n✓ Explorer is now using the generic folder template.`n" -ForegroundColor Green
 ```
 
 ---
 
 ## ↩️ Restore Default
 
-Want to go back to the normal Windows behavior?
+Want to revert to normal Windows behavior? Run `Restore-ExplorerDefault.ps1`.
 
-Run `Restore-Explorer-Default.ps1`.
-
-### Restore script
+### Or run directly in a PowerShell terminal
 
 ```powershell
-# === RESTORE WINDOWS EXPLORER DEFAULT ===
+# === RESTORE WINDOWS EXPLORER DEFAULT BEHAVIOR ===
 
 $Shell = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell"
 
-# Remove forced Generic configuration
+# Remove the forced generic configuration
 Remove-Item "$Shell\Bags\AllFolders" -Recurse -Force -ErrorAction SilentlyContinue
 
 # Reset Explorer folder view cache
@@ -81,23 +90,36 @@ Remove-Item "$Shell\BagMRU" -Recurse -Force -ErrorAction SilentlyContinue
 Stop-Process -Name explorer -Force
 Start-Process explorer.exe
 
-Write-Host ""
-Write-Host "✓ Explorer has been restored to its default behavior." -ForegroundColor Green
-Write-Host ""
+Write-Host "`n✓ Explorer has been restored to its default behavior.`n" -ForegroundColor Green
 ```
 
 ---
 
-## ⚠️ Note
+## ⚙️ How It Works
 
-The scripts reset saved Explorer folder views. Some custom layouts, columns, sorting, or icon sizes may be reset.
+Windows stores per-folder view settings (columns, sort order, icon size, template type) in the registry under:
+HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags
+
+
+Explorer looks up a folder's `FolderType` to decide which columns and metadata to load. This script clears the existing cache and inserts a single generic template (`FolderType = NotSpecified`) that applies to every folder, so Explorer no longer needs to auto-detect or fetch type-specific metadata.
+
+---
+
+## ⚠️ Notes & Warnings
+
+- This only affects **your current Windows user account** — no admin rights required, and no system-wide settings are modified.
+- Running the script resets Explorer's folder view cache. Any custom per-folder layouts, column choices, sort order, or icon sizes you've set may be reset to default.
+- Speed improvements depend on your hardware, storage type (HDD vs SSD), and how many files/folders you typically browse. Results will vary.
+- Always back up your registry (or create a System Restore point) before running scripts that modify `HKCU`, especially if you're unsure.
 
 ---
 
 ## 🖥️ Requirements
 
-* Windows 10 / 11
-* PowerShell
+- Windows 10 or 11
+- PowerShell (built-in, no extra install needed)
+
+✅ **Tested on:** Windows 11 IoT LTSC 24H2, build 26100.9168
 
 ---
 
@@ -105,4 +127,9 @@ The scripts reset saved Explorer folder views. Some custom layouts, columns, sor
 
 Made with assistance from **ChatGPT by OpenAI**.
 
-⭐ If this helps you, consider giving the repository a Star!
+---
+
+## Contact me
+instagram: @atmeg_
+
+⭐ If this helped you, consider starring the repository!
