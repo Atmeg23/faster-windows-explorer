@@ -18,9 +18,9 @@ Windows Explorer automatically detects **Pictures, Music, Videos**, etc. and may
 
 ## 📥 Installation
 
-1. Right-click `Force-Generic-Explorer.ps1`
+1. Right-click `install faster-windows-explorer`
 2. Select **Run with PowerShell**
-3. Done. 🎉
+3. Done. 
 
 Explorer will restart automatically.
 
