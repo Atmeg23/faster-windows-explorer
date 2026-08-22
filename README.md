@@ -1,308 +1,133 @@
 # faster-windows-explorer
 Make Windows Explorer faster by using a consistent Generic folder view and avoiding unnecessary metadata templates.
+# 🚀 Windows Explorer Generic View
 
-# 🚀 Windows Explorer Generic View — Faster Folder Sorting
+**Make Windows Explorer faster when browsing and sorting files.**
 
-> **Make Windows Explorer faster by using one consistent folder view for all folders.**
+Windows Explorer automatically checks folders and loads extra metadata for **Pictures, Music, Videos**, etc.
 
-Windows Explorer automatically detects folder types and applies different templates for **Pictures, Music, Videos, Documents**, and more.
+Kalau folder berisi banyak file, proses ini bisa terasa lambat.
 
-That sounds useful — until Explorer starts processing unnecessary metadata such as:
+### ⚡ Simple Example
 
-* 🏷️ Tags
-* 📐 Dimensions
-* 🎵 Album / Artist
-* ⏱️ Duration
-* 🎬 Video metadata
-* 📅 Date Taken
+```text
+BEFORE
+Windows Explorer
+      ↓
+Check folder type
+      ↓
+Load metadata
+      ↓
+Sort files
+      ↓
+🐢 10 seconds
 
-When working with folders containing **hundreds or thousands of files**, these additional metadata operations can make sorting and browsing feel noticeably slower.
 
-This project provides simple **PowerShell scripts** to force Windows Explorer to use a consistent **Generic Items** template.
+AFTER
+Windows Explorer
+      ↓
+Generic folder view
+      ↓
+Sort files
+      ↓
+⚡ 1 second
+```
+
+> **Example only. Actual performance depends on your PC, storage, and number of files.**
 
 ---
 
-## ✨ What Does It Do?
+## ✨ What This Does
 
-Instead of Windows automatically changing the folder template:
-
-| Folder Type      | Windows Default   | With This Script |
-| ---------------- | ----------------- | ---------------- |
-| 📷 Pictures      | Picture template  | Generic          |
-| 🎵 Music         | Music template    | Generic          |
-| 🎬 Videos        | Video template    | Generic          |
-| 📄 Documents     | Document template | Generic          |
-| 📁 Other folders | Automatic         | Generic          |
-
-The goal is a consistent Details View:
+Forces Windows Explorer to use one simple folder template:
 
 ```text
 Name | Date modified | Type | Size
 ```
 
-No unnecessary:
+Instead of automatically adding things like:
 
 ```text
-Tags
-Dimensions
-Length
-Album
-Artists
-Genre
-Date taken
+Tags | Dimensions | Length | Album | Artist | Date taken
 ```
 
 ---
 
-# ⚡ Why?
+# 📥 Installation
 
-Windows Explorer uses different folder templates depending on what it thinks a folder contains.
+**No Git. No installation. No complicated setup.**
 
-For example:
+### 1. Download
+
+Click:
+
+**Code → Download ZIP**
+
+Extract the ZIP.
+
+### 2. Run
+
+Open the extracted folder.
+
+Right-click:
 
 ```text
-📁 Photos
-   ├── image001.jpg
-   ├── image002.jpg
-   └── image003.jpg
+Force-Generic-Explorer.ps1
 ```
 
-Explorer may automatically treat this as a **Pictures** folder and load additional image metadata.
+Select:
 
-The same happens with:
+**Run with PowerShell**
 
-```text
-🎵 Music
-🎬 Videos
-📷 Photos
-```
+Done. 🎉
 
-If you don't need these metadata columns, they can be unnecessary overhead when browsing and sorting files.
-
-This project tells Explorer:
-
-> **"Treat my folders as Generic Items."**
+Windows Explorer will restart automatically.
 
 ---
 
-# 🛠️ Features
-
-### ✅ One view for all folders
-
-Use the same basic columns everywhere:
-
-```text
-Name
-Date modified
-Type
-Size
-```
-
-### 🚀 Faster folder browsing
-
-Avoid unnecessary folder-specific metadata templates.
-
-### 🧹 No third-party software
-
-Only uses built-in Windows Registry and PowerShell.
-
-### ↩️ Easy rollback
-
-A separate script restores Windows Explorer's default behavior.
-
----
-
-# 📦 Installation
-
-# 🚀 Force Generic View
-
-Run **PowerShell** as your normal Windows user and execute:
-
-```powershell
-# === FORCE ALL EXPLORER FOLDERS TO GENERIC ===
-
-$Shell = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell"
-
-# Remove existing Explorer folder view cache
-Remove-Item "$Shell\Bags" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$Shell\BagMRU" -Recurse -Force -ErrorAction SilentlyContinue
-
-# Create Generic folder template
-$AllFolders = "$Shell\Bags\AllFolders\Shell"
-New-Item $AllFolders -Force | Out-Null
-
-New-ItemProperty `
-    -Path $AllFolders `
-    -Name "FolderType" `
-    -PropertyType String `
-    -Value "NotSpecified" `
-    -Force | Out-Null
-
-# Restart Explorer
-Stop-Process -Name explorer -Force
-Start-Process explorer.exe
-
-Write-Host ""
-Write-Host "✓ Windows Explorer is now using the Generic folder template." -ForegroundColor Green
-Write-Host ""
-```
-
-After running the script, Windows Explorer will use the Generic folder template instead of automatically applying specialized templates.
-
----
-
-# ↩️ Restore Windows Explorer Default
-
-Want to go back to the normal Windows behavior?
+# ↩️ Want to Go Back?
 
 Run:
 
-```powershell
-# === RESTORE WINDOWS EXPLORER DEFAULT ===
-
-$Shell = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell"
-
-# Remove forced Generic configuration
-Remove-Item "$Shell\Bags\AllFolders" -Recurse -Force -ErrorAction SilentlyContinue
-
-# Reset Explorer folder view cache
-Remove-Item "$Shell\Bags" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$Shell\BagMRU" -Recurse -Force -ErrorAction SilentlyContinue
-
-# Restart Explorer
-Stop-Process -Name explorer -Force
-Start-Process explorer.exe
-
-Write-Host ""
-Write-Host "✓ Windows Explorer has been restored to its default behavior." -ForegroundColor Green
-Write-Host ""
-```
-
-Windows will once again automatically detect folder types:
-
 ```text
-📷 Pictures → Pictures template
-🎵 Music    → Music template
-🎬 Videos   → Videos template
-📄 Documents → Documents template
-📁 General  → General Items
+Restore-Explorer-Default.ps1
 ```
+
+This returns Windows Explorer to its normal behavior.
 
 ---
 
-# ⚠️ Important
+## ⚠️ Important
 
-These scripts modify the following user-level Registry location:
+The script resets Explorer's saved folder views.
 
-```text
-HKEY_CURRENT_USER
-```
+Your custom:
 
-They **do not modify system-wide Registry settings**.
-
-However, the scripts remove:
-
-```text
-Bags
-BagMRU
-```
-
-These Registry keys store Windows Explorer's folder-specific view settings.
-
-Therefore, running the scripts may reset previously customized Explorer views such as:
-
-* Icon size
-* Details View
-* Column configuration
-* Folder-specific layouts
+* Folder layouts
+* Column settings
 * Sorting preferences
+* Icon sizes
 
-### 💡 Recommendation
-
-If you have heavily customized Explorer views, create a Registry backup before using the scripts.
-
----
-
-# 🖥️ Compatibility
-
-Tested / intended for:
-
-* ✅ Windows 10
-* ✅ Windows 11
-* ✅ PowerShell 5.1+
-* ✅ PowerShell 7+
-
-No external dependencies required.
+may be reset.
 
 ---
 
-# 📁 Repository Structure
+## 🖥️ Compatibility
 
-```text
-windows-explorer-generic-view/
-│
-├── Force-Generic-Explorer.ps1
-├── Restore-Explorer-Default.ps1
-└── README.md
-```
+* Windows 10
+* Windows 11
+* PowerShell
+
+No additional software required.
 
 ---
 
-# 🔍 Before vs After
+## 🤖 Credit
 
-### Windows Default
-
-```text
-📷 Pictures
-
-Name | Date modified | Type | Size | Tags | Dimensions | Date taken
-```
-
-### Generic View
-
-```text
-📁 Any Folder
-
-Name | Date modified | Type | Size
-```
-
-The idea is simple:
-
-> **Less metadata processing → less unnecessary work → potentially faster browsing and sorting.**
-
-Actual performance improvements may vary depending on the number of files, storage device, metadata availability, and Windows configuration.
+Made with assistance from **ChatGPT by OpenAI**.
 
 ---
 
-# 🤖 Credits
+## ⭐ Like It?
 
-Created with assistance from **ChatGPT by OpenAI**.
-
-The PowerShell/Registry approach was developed and refined with ChatGPT to provide a simple, reversible way to control Windows Explorer folder templates.
-
-Additional references and inspiration come from Microsoft's documentation and the Windows community.
-
----
-
-# 📜 License
-
-This project is provided **as-is**, without warranty.
-
-You are free to:
-
-* Use it
-* Modify it
-* Fork it
-* Redistribute it
-
-Use at your own risk and always keep a Registry backup if you have important customized Explorer settings.
-
----
-
-## ⭐ If This Helped You
-
-If this project made Windows Explorer feel faster or more consistent:
-
-**Give the repository a ⭐ Star!**
-
-It helps others discover the project too. ❤️
+If this helps make your Windows Explorer faster or less annoying, consider giving the repo a ⭐
