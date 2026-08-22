@@ -1,124 +1,107 @@
-# faster-windows-explorer
-Make Windows Explorer faster by using a consistent Generic folder view and avoiding unnecessary metadata templates.
-# 🚀 Windows Explorer Generic View
+# 🚀 Faster Windows Explorer
 
-**Make Windows Explorer faster when browsing and sorting files.**
+Make Windows Explorer simpler and potentially faster by using one consistent folder view.
 
-Windows Explorer automatically checks folders and loads extra metadata for **Pictures, Music, Videos**, etc.
+Windows Explorer automatically detects **Pictures, Music, Videos**, etc. and may load additional metadata.
 
-Kalau folder berisi banyak file, proses ini bisa terasa lambat.
+## ⚡ Before vs After
 
-### ⚡ Simple Example
+|             | Before                                                           | After                                                              |
+| ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Columns** | Varies by folder (`Tags`, `Dimensions`, `Length`, `Album`, etc.) | All generic: `Name \| Date modified \| Type \| Size`               |
+| **Sorting** | Potentially slower — Explorer may load additional metadata       | Potentially faster! — Explorer doesn't need to load those metadata |
 
-```text
-BEFORE
-Windows Explorer
-      ↓
-Check folder type
-      ↓
-Load metadata
-      ↓
-Sort files
-      ↓
-🐢 10 seconds
-
-
-AFTER
-Windows Explorer
-      ↓
-Generic folder view
-      ↓
-Sort files
-      ↓
-⚡ 1 second
-```
-
-> **Example only. Actual performance depends on your PC, storage, and number of files.**
+> **Example:** Before: ~10 seconds → After: ~1 second.
+> Actual results depend on your PC, storage, and number of files.
 
 ---
 
-## ✨ What This Does
+## 📥 Installation
 
-Forces Windows Explorer to use one simple folder template:
+**No Git. No installation.**
 
-```text
-Name | Date modified | Type | Size
-```
+1. **Code → Download ZIP**
+2. Extract the ZIP
+3. Right-click `Force-Generic-Explorer.ps1`
+4. Select **Run with PowerShell**
+5. Done. 🎉
 
-Instead of automatically adding things like:
+Explorer will restart automatically.
 
-```text
-Tags | Dimensions | Length | Album | Artist | Date taken
+### Or run directly with PowerShell
+
+```powershell
+# === FORCE ALL EXPLORER FOLDERS TO GENERIC ===
+
+$Shell = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell"
+
+# Remove existing Explorer folder view cache
+Remove-Item "$Shell\Bags" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$Shell\BagMRU" -Recurse -Force -ErrorAction SilentlyContinue
+
+# Create Generic folder template
+$AllFolders = "$Shell\Bags\AllFolders\Shell"
+New-Item $AllFolders -Force | Out-Null
+
+New-ItemProperty `
+    -Path $AllFolders `
+    -Name "FolderType" `
+    -PropertyType String `
+    -Value "NotSpecified" `
+    -Force | Out-Null
+
+# Restart Explorer
+Stop-Process -Name explorer -Force
+Start-Process explorer.exe
+
+Write-Host ""
+Write-Host "✓ Explorer is now using the Generic folder template." -ForegroundColor Green
+Write-Host ""
 ```
 
 ---
 
-# 📥 Installation
+## ↩️ Restore Default
 
-**No Git. No installation. No complicated setup.**
+Want to go back to the normal Windows behavior?
 
-### 1. Download
+Run `Restore-Explorer-Default.ps1`.
 
-Click:
+### Restore script
 
-**Code → Download ZIP**
+```powershell
+# === RESTORE WINDOWS EXPLORER DEFAULT ===
 
-Extract the ZIP.
+$Shell = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell"
 
-### 2. Run
+# Remove forced Generic configuration
+Remove-Item "$Shell\Bags\AllFolders" -Recurse -Force -ErrorAction SilentlyContinue
 
-Open the extracted folder.
+# Reset Explorer folder view cache
+Remove-Item "$Shell\Bags" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$Shell\BagMRU" -Recurse -Force -ErrorAction SilentlyContinue
 
-Right-click:
+# Restart Explorer
+Stop-Process -Name explorer -Force
+Start-Process explorer.exe
 
-```text
-Force-Generic-Explorer.ps1
+Write-Host ""
+Write-Host "✓ Explorer has been restored to its default behavior." -ForegroundColor Green
+Write-Host ""
 ```
 
-Select:
+---
 
-**Run with PowerShell**
+## ⚠️ Note
 
-Done. 🎉
-
-Windows Explorer will restart automatically.
+The scripts reset saved Explorer folder views. Some custom layouts, columns, sorting, or icon sizes may be reset.
 
 ---
 
-# ↩️ Want to Go Back?
+## 🖥️ Requirements
 
-Run:
-
-```text
-Restore-Explorer-Default.ps1
-```
-
-This returns Windows Explorer to its normal behavior.
-
----
-
-## ⚠️ Important
-
-The script resets Explorer's saved folder views.
-
-Your custom:
-
-* Folder layouts
-* Column settings
-* Sorting preferences
-* Icon sizes
-
-may be reset.
-
----
-
-## 🖥️ Compatibility
-
-* Windows 10
-* Windows 11
+* Windows 10 / 11
 * PowerShell
-
-No additional software required.
 
 ---
 
@@ -126,8 +109,4 @@ No additional software required.
 
 Made with assistance from **ChatGPT by OpenAI**.
 
----
-
-## ⭐ Like It?
-
-If this helps make your Windows Explorer faster or less annoying, consider giving the repo a ⭐
+⭐ If this helps you, consider giving the repository a Star!
