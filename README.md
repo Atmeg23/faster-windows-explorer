@@ -18,13 +18,9 @@ Windows Explorer automatically detects **Pictures, Music, Videos**, etc. and may
 
 ## 📥 Installation
 
-**No Git. No installation.**
-
-1. **Code → Download ZIP**
-2. Extract the ZIP
-3. Right-click `Force-Generic-Explorer.ps1`
-4. Select **Run with PowerShell**
-5. Done. 🎉
+1. Right-click `Force-Generic-Explorer.ps1`
+2. Select **Run with PowerShell**
+3. Done. 🎉
 
 Explorer will restart automatically.
 
