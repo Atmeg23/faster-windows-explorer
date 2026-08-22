@@ -114,18 +114,6 @@ A separate script restores Windows Explorer's default behavior.
 
 # 📦 Installation
 
-No installation required.
-
-Download or clone this repository:
-
-```powershell
-git clone https://github.com/YOUR_USERNAME/windows-explorer-generic-view.git
-```
-
-Or simply download the `.ps1` files and run them manually.
-
----
-
 # 🚀 Force Generic View
 
 Run **PowerShell** as your normal Windows user and execute:
